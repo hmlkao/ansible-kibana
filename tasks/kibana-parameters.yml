@@ -14,7 +14,6 @@
   when: not use_system_d
 
 - set_fact: conf_dir={{ kibana_conf_dir }}/{{ kibana_instance_name }}
-- set_fact: instance_default_file={{ default_file | dirname }}/{{ kibana_instance_name }}_{{ default_file | basename }}
 - set_fact: instance_init_script={{ init_script | dirname }}/{{ kibana_instance_name }}_{{ init_script | basename }}
 
 - set_fact: instance_sysd_script={{ sysd_script | dirname }}/{{ kibana_instance_name }}_{{ sysd_script | basename}}

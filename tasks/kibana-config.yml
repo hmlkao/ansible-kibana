@@ -22,12 +22,6 @@
   register: system_change
   notify: restart kibana
 
-# Copy the instance specific default file
-- name: Copy Default File for Instance
-  become: yes
-  template: src=kibana.j2 dest={{ instance_default_file }} mode=0644 force=yes
-  notify: restart kibana
-
 # Copy the instance specific init file
 - name: Copy Debian Init File for Instance
   become: yes
@@ -56,17 +50,7 @@
   become: yes
   file: dest=/etc/init.d/kibana state=absent
 
-- name: Delete Default Environment File
-  become: yes
-  file: dest=/etc/default/kibana state=absent
-  when: ansible_os_family == 'Debian'
-
-- name: Delete Default Environment File
-  become: yes
-  file: dest=/etc/sysconfig/kibana state=absent
-  when: ansible_os_family == 'RedHat'
-
-- name: Delete Default Sysconfig File
+- name: Delete Default Systemd File
   become: yes
   file: dest="{{ sysd_script }}" state=absent
 
