@@ -1,0 +1,75 @@
+---
+# Configure Kibana
+
+# Create required directories
+- name: Create Directories
+  become: yes
+  file: path={{ item }} state=directory owner={{ kibana_user }} group={{ kibana_group }}
+  with_items:
+    - "{{ pid_dir }}"
+    - "{{ conf_dir }}"
+
+# Create log directory
+- name: Create log directory
+  become: yes
+  file: path={{ log_dir }} state=directory owner={{ kibana_user }} group={{ kibana_group }}
+  when: kibana_log_to_file
+
+# Copy the config template
+- name: Copy Configuration File
+  become: yes
+  template: src=kibana.yml.j2 dest={{ conf_dir }}/kibana.yml owner={{ kibana_user }} group={{ kibana_group }} mode=0644 force=yes
+  register: system_change
+  notify: restart kibana
+
+# Copy the instance specific default file
+- name: Copy Default File for Instance
+  become: yes
+  template: src=kibana.j2 dest={{ instance_default_file }} mode=0644 force=yes
+  notify: restart kibana
+
+# Copy the instance specific init file
+- name: Copy Debian Init File for Instance
+  become: yes
+  template: src=init/debian/kibana.j2 dest={{ instance_init_script }} mode=0755 force=yes
+  when: ansible_os_family == 'Debian' and not use_system_d
+  notify: restart kibana
+
+# Copy the instance specific init file
+- name: Copy Redhat Init File for Instance
+  become: yes
+  template: src=init/redhat/kibana.j2 dest={{ instance_init_script }} mode=0755 force=yes
+  when: ansible_os_family == 'RedHat' and not use_system_d
+  notify: restart kibana
+
+# Copy the systemd specific file if systemd is installed
+- name: Copy Systemd File for Instance
+  become: yes
+  template: src=systemd/kibana.j2 dest={{ instance_sysd_script }} mode=0644 force=yes
+  when: use_system_d
+  notify:
+  - reload systemd configuration
+  - restart kibana
+
+# Clean up un-wanted package scripts to avoid confusion
+- name: Delete Default Init
+  become: yes
+  file: dest=/etc/init.d/kibana state=absent
+
+- name: Delete Default Environment File
+  become: yes
+  file: dest=/etc/default/kibana state=absent
+  when: ansible_os_family == 'Debian'
+
+- name: Delete Default Environment File
+  become: yes
+  file: dest=/etc/sysconfig/kibana state=absent
+  when: ansible_os_family == 'RedHat'
+
+- name: Delete Default Sysconfig File
+  become: yes
+  file: dest="{{ sysd_script }}" state=absent
+
+- name: Delete Default Configuration File
+  become: yes
+  file: dest=/etc/kibana/kibana.yml state=absent

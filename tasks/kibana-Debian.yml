@@ -1,0 +1,42 @@
+---
+
+- set_fact: force_install=no
+
+- set_fact: force_install=yes
+  when: kibana_allow_downgrades
+
+- name: Debian - Install apt-transport-https to support https APT downloads
+  become: yes
+  apt: name=apt-transport-https state=present
+  when: kibana_use_repository
+
+- name: Debian - Add Kibana repository key
+  become: yes
+  apt_key: url="{{ kibana_apt_key }}" state=present
+  when: kibana_use_repository and kibana_apt_key
+
+- name: Debian - Add Kibana repository
+  become: yes
+  apt_repository: repo={{ item.repo }} state={{ item.state}}
+  with_items:
+    - { repo: "{{ kibana_apt_url_old }}", state: "absent" }
+    - { repo: "{{ kibana_apt_url }}", state: "present" }
+  when: kibana_use_repository
+
+- name: Debian - Ensure Kibana is installed
+  become: yes
+  apt: name=kibana{% if kibana_version is defined and kibana_version != "" %}={{ kibana_version }}{% endif %} state=present force={{force_install}} allow_unauthenticated={{ 'no' if kibana_apt_key else 'yes' }} cache_valid_time=86400
+  when: kibana_use_repository
+  register: debian_kibana_install_from_repo
+  notify: restart kibana
+
+- name: Debian - Download Kibana from url
+  get_url: url={% if kibana_custom_package_url is defined %}{{ kibana_custom_package_url }}{% else %}{{ kibana_package_url }}-{{ kibana_version }}.deb{% endif %} dest=/tmp/kibana-{{ kibana_version }}.deb validate_certs=no
+  when: not kibana_use_repository
+
+- name: Debian - Ensure Kibana is installed from downloaded package
+  become: yes
+  apt: deb=/tmp/kibana-{{ kibana_version }}.deb
+  when: not kibana_use_repository
+  register: kibana_install_from_package
+  notify: restart kibana

@@ -1,0 +1,7 @@
+---
+elastic_major_version: "5.x"
+elastic_gpg_key: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+kibana_package_url: "https://artifacts.elastic.co/downloads/kibana/kibana"
+kibana_conf_dir: "/etc/kibana"
+sysd_script: "/usr/lib/systemd/system/kibana.service"
+init_script: "/etc/init.d/kibana"

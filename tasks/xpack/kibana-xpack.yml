@@ -1,0 +1,10 @@
+---
+
+- set_fact: kibana_version_changed={{ ((kibana_install_from_package is defined and (debian_kibana_install_from_repo.changed or redhat_kibana_install_from_repo.changed)) or (kibana_install_from_package is defined and kibana_install_from_package.changed)) }}
+
+- import_tasks: kibana-xpack-install.yml
+
+#Add any feature specific configuration here
+- name: Set Plugin Directory Permissions
+  become: yes
+  file: state=directory path={{ kibana_home }}/plugins owner={{ kibana_user }} group={{ kibana_group }} recurse=yes
