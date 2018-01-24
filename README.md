@@ -4,7 +4,7 @@ Tested platforms are:
 * CentOS 7
 Ansible version >= 2.4 must be used.
 
-This manual is based on [official Elastic Ansible role for Elasticsearch](https://github.com/elastic/ansible-elasticsearch)
+This role is based on [official Elastic Ansible role for Elasticsearch](https://github.com/elastic/ansible-elasticsearch)
 
 ## Usage
 Create your Ansible playbook with your own tasks and include role kibana. You will have to have this repository accessible within the context of playbook, e.g.
@@ -98,11 +98,9 @@ Second instance named "production" will be connected to elasticsearch on host el
 Both will have enabled features of x-pack plugin.
 
 ## Role variables
-`variable` (default value) Description
+`elastic_version` (5.6.5) Version of Kibana which will be installed
 
-`kibana_config` ([]) Variables from [Kibana configuration](https://www.elastic.co/guide/en/kibana/current/settings.html)
-
-`kibana_version` (5.6.5) Version of Kibana which will be installed
+`kibana_config` ({}) Variables from [Kibana configuration](https://www.elastic.co/guide/en/kibana/current/settings.html)
 
 `kibana_enable_xpack` (false) Enable X-pack features in Kibana
 

@@ -57,3 +57,7 @@
 - name: Delete Default Configuration File
   become: yes
   file: dest=/etc/kibana/kibana.yml state=absent
+
+- name: Delete Default file
+  become: yes
+  file: dest=/etc/default/kibana state=absent
