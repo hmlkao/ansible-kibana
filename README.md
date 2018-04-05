@@ -4,7 +4,7 @@ Tested platforms are:
 * CentOS 7
 Ansible version >= 2.4 must be used.
 
-This role is based on [official Elastic Ansible role for Elasticsearch](https://github.com/elastic/ansible-elasticsearch)
+This role is based on [official Elastic Ansible role for Elasticsearch](https://github.com/elastic/ansible-elasticsearch) (exactly commit 7714c925e06e8538a09b6e9d8c1bd074813e9639)
 
 ## Usage
 Create your Ansible playbook with your own tasks and include role kibana. You will have to have this repository accessible within the context of playbook, e.g.
