@@ -11,3 +11,6 @@
     - kibana_restart_on_change
     - kibana_start_service
   register: kibana_restarted
+
+- name: iptables save
+  command: service iptables save

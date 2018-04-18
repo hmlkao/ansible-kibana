@@ -38,7 +38,7 @@ The above runs Kibana on localhost with default values.
 
 > Note: This configuration runs instance listening only on localhost, so it will be accessible only from localhost.
 
-### Extended configuration with X-pack enabled
+### Extended configuration with X-pack enabled (without security module enabled)
 ```yaml
 - name: Extended Example
   hosts: some-hosts
@@ -97,8 +97,13 @@ Second instance named "production" will be connected to elasticsearch on host el
 
 Both will have enabled features of x-pack plugin.
 
+## Firewall
+Role sets `iptables`
+
+Be sure that you don't use `firewalld` on your server
+
 ## Role variables
-`elastic_version` (5.6.5) Version of Kibana which will be installed
+`elastic_version` () Version of Kibana which will be installed, if not set the lastest version will be installed
 
 `kibana_config` ({}) Variables from [Kibana configuration](https://www.elastic.co/guide/en/kibana/current/settings.html)
 
@@ -111,3 +116,7 @@ Both will have enabled features of x-pack plugin.
 `kibana_plugins_reinstall` (false) Force reinstall all plugins
 
 `kibana_plugins` (false) An array of plugin definitions
+
+## TODO
+Add setting of Logstash nodes, is it possible?
+Firewall settings

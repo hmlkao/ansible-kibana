@@ -22,6 +22,9 @@
   register: system_change
   notify: restart kibana
 
+- debug:
+    msg: "Kibana config: {{ kibana_config }}"
+
 # Copy the instance specific init file
 - name: Copy Debian Init File for Instance
   become: yes
@@ -54,6 +57,10 @@
   become: yes
   file: dest="{{ sysd_script }}" state=absent
 
+- name: Delete native Default Systemd File
+  become: yes
+  file: dest="/usr/lib/systemd/system/kibana.service" state=absent
+
 - name: Delete Default Configuration File
   become: yes
   file: dest=/etc/kibana/kibana.yml state=absent
@@ -61,3 +68,26 @@
 - name: Delete Default file
   become: yes
   file: dest=/etc/default/kibana state=absent
+
+# Firewall configuration
+- name: Firewall NEW connections
+  iptables:
+    chain: INPUT
+    action: insert
+    protocol: tcp
+    ctstate: NEW
+    destination: "{{ kibana_config['server.host'] }}"
+    destination_port: "{{ item }}"
+    jump: ACCEPT
+  with_items:
+    - "{{ kibana_config.kibana_port | default('5601') }}"
+  notify: iptables save
+  when: kibana_config['server.host'] is defined
+
+- name: Firewall RELATED, ESTABLISHED connections
+  iptables:
+    chain: INPUT
+    action: insert
+    ctstate: RELATED,ESTABLISHED
+    jump: ACCEPT
+  notify: iptables save

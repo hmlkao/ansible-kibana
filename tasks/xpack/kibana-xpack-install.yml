@@ -10,6 +10,14 @@
   environment:
     CONF_DIR: "{{ conf_dir }}"
 
+- debug:
+    msg: "kibana_version_changed: {{ kibana_version_changed }}"
+
+- debug:
+    msg: "kibana_enable_xpack: {{ kibana_enable_xpack }}"
+
+- debug:
+    msg: "x_pack_installed: {{ x_pack_installed }}"
 
 # Remove X-Pack if installed and its not been requested or the Kibana version has changed
 - name: Remove x-pack plugin
@@ -32,7 +40,7 @@
 - name: Install x-pack plugin from local
   become: yes
   command: >
-    {{ kibana_home }}/bin/kibana-plugin install --silent file:///tmp/x-pack-{{ kibana_version }}.zip
+    {{ kibana_home }}/bin/kibana-plugin install file:///tmp/x-pack-{{ kibana_version }}.zip
   register: xpack_state
   changed_when: xpack_state.rc == 0
   when: (x_pack_installed.rc == 1 or kibana_version_changed) and (kibana_enable_xpack and kibana_xpack_custom_url is defined)
@@ -47,10 +55,10 @@
 - name: Install x-pack plugin from elastic.co
   become: yes
   command: >
-    {{ kibana_home }}/bin/kibana-plugin install --silent x-pack
+    {{ kibana_home }}/bin/kibana-plugin install x-pack
   register: xpack_state
-  failed_when: xpack_state.rc != 0
-  changed_when: xpack_state.rc == 0
+  failed_when: xpack_state.rc not in [0, 70]
+  changed_when: xpack_state.rc in [0, 70]
   when: (x_pack_installed.rc == 1 or kibana_version_changed) and (kibana_enable_xpack and kibana_xpack_custom_url is not defined)
   notify: restart kibana
   environment:
