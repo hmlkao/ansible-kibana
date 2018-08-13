@@ -1,0 +1,6 @@
+ki_update: false
+java_update: false
+default_config: []
+ki_heap_size: 1g
+ki_restart_on_change: true
+ki_version: ""

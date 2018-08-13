@@ -1,0 +1,9 @@
+---
+- set_fact: java_state="present"
+
+- set_fact: java_state="latest"
+  when: java_update == true
+
+- name: ensure Java is installed
+  become: yes
+  yum: name={{ java }} state={{ java_state }}

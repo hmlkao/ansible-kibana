@@ -1,0 +1,10 @@
+# Tasks specific for this project
+---
+
+- name: ensure log dir exists
+  file:
+    path: "{{ config['logging.dest'] | dirname }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ group }}"
+  when: config['logging.dest'] is defined

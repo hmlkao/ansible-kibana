@@ -1,0 +1,17 @@
+---
+- name: copy {{ project | title }} configuration
+  become: yes
+  template:
+    src: "{{ project }}.yml"
+    dest: "{{ conf_dir }}/{{ project }}.yml"
+  notify: restart {{ project }}
+
+# Run tasks specific for the project if exists
+- local_action: stat path={{ role_path }}/tasks/config-specific.yml
+  register: config_specific_file
+
+- import_tasks: config-specific.yml
+  when: config_specific_file.stat.exists
+
+- name: ensure service is enabled and started
+  service: name={{ service_name }} state=started enabled=yes

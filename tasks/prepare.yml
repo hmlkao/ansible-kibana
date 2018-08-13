@@ -1,0 +1,16 @@
+---
+# ---
+- import_tasks: variables.yml
+
+- name: check supported OS
+  fail:
+    msg: "The system {{ ansible_os_family }} is not supported"
+  when: ansible_os_family != "RedHat"
+
+- set_fact:
+    config: "{{ default_config }}"
+  when: config is not defined
+
+- set_fact:
+    config: "{{ default_config | combine(config) }}"
+  when: config is defined

@@ -1,0 +1,30 @@
+# This should be only place where are used variables with prefix
+# It facilitate sharing code between projects
+---
+
+- set_fact: version = ki_version
+  when: ki_version is defined
+
+- set_fact: config={{ ki_config }}
+  when: ki_config is defined
+
+- set_fact: pkg_name={{ ki_pkg_name }}
+  when: ki_pkg_name is defined
+
+- set_fact: pkg_update={{ ki_update }}
+  when: ki_update is defined
+
+- set_fact: restart_on_change={{ ki_restart_on_change }}
+  when: ki_restart_on_change is defined
+
+- set_fact: service_name={{ ki_service_name }}
+  when: ki_service_name is defined
+
+- set_fact: conf_dir={{ ki_conf_dir }}
+  when: ki_conf_dir is defined
+
+- set_fact: user={{ ki_user }}
+  when: ki_user is defined
+
+- set_fact: group={{ ki_group }}
+  when: ki_user is defined

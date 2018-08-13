@@ -1,0 +1,16 @@
+---
+
+# Prepare environment
+- import_tasks: prepare.yml
+  tags:
+    - always
+
+# Install needed packages
+- import_tasks: install.yml
+  tags:
+    - install
+
+# Configure installation
+- import_tasks: config.yml
+  tags:
+    - config

@@ -1,0 +1,11 @@
+# Contain variables used in role but which shouldn't be changed by user
+---
+project: kibana
+elastic_major_version: 6.x
+java: java-1.8.0-openjdk.x86_64
+elastic_gpg_key: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+ki_conf_dir: /etc/{{ project }}
+ki_pkg_name: "{{ project }}"
+ki_service_name: "{{ project }}"
+ki_user: "{{ project }}"
+ki_group: "{{ project }}"

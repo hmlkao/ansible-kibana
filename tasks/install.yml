@@ -1,0 +1,24 @@
+---
+- import_tasks: java.yml
+  tags:
+    - java
+
+- name: add Elastic repo
+  become: yes
+  template:
+    src: elastic.repo
+    dest: /etc/yum.repos.d/elastic-{{ elastic_major_version }}.repo
+
+- set_fact: service_state="present"
+
+- set_fact: service_state="latest"
+  when: pkg_update == true
+
+- set_fact: pkg_name={{ pkg_name }}-{{ version }}
+  when: version is defined and version != "" and pkg_update == false
+
+- name: install {{ project | title }}
+  become: yes
+  yum: name={{ pkg_name }} state={{ service_state }}
+  register: installed
+  notify: reload systemd configuration
