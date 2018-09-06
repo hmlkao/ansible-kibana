@@ -6,3 +6,7 @@ Tested platforms are:
 Ansible version >= 2.4 MUST be used.
 
 ## Role variables
+
+
+## TODO
+ - Make handlers more independent on project

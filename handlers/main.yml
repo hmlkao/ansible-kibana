@@ -1,11 +1,9 @@
 ---
 
 - name: reload systemd configuration
-  become: yes
   command: systemctl daemon-reload
 
-- name: restart {{ project }}
-  become: yes
-  service: name={{ service_name }} state=restarted enabled=yes
+- name: restart kibana
+  service: name=kibana state=restarted enabled=yes
   when:
     - restart_on_change

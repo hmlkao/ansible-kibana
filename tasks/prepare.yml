@@ -14,3 +14,10 @@
 - set_fact:
     config: "{{ default_config | combine(config) }}"
   when: config is defined
+
+# Run tasks specific for the project if exists
+- local_action: stat path={{ role_path }}/tasks/prepare-specific.yml
+  register: prepare_specific_file
+# TODO: Import is done before the file is checked!! So this usage still show WARNING!
+- import_tasks: prepare-specific.yml
+  when: prepare_specific_file.stat.exists
